@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { assertSupabase } from '../lib/supabase'
-import { MOTIVO_LABELS, STATUS_CONFIG } from '../lib/constants'
+import { MOTIVO_LABELS, STATUS_CONFIG, EMPRESAS } from '../lib/constants'
 
 /* ── Helpers ─────────────────────────────────────────── */
 
@@ -78,6 +78,12 @@ function RequisitionCard({ record, onEdit, onPrint, onDelete, confirmingDelete, 
     <div className="section-card flex flex-col gap-5 group">
       {/* Top badges */}
       <div className="flex items-center gap-2 flex-wrap">
+        {record.empresa && (
+          <span className="text-[10px] font-light tracking-[0.15em] uppercase text-cream/50
+                           border border-cream/15 px-2.5 py-1">
+            {record.empresa}
+          </span>
+        )}
         {record.area && (
           <span className="text-[10px] font-light tracking-[0.15em] uppercase text-gold/70
                            border border-gold/20 px-2.5 py-1">
@@ -199,6 +205,11 @@ export default function BancoDeVagas({ onEdit, onPrint, onNew }) {
   const [loading, setLoading]               = useState(true)
   const [error, setError]                   = useState(null)
   const [confirmingDelete, setConfirmingDelete] = useState(null)
+  const [filterEmpresa, setFilterEmpresa]   = useState('')
+
+  const filtered = filterEmpresa
+    ? records.filter((r) => r.empresa === filterEmpresa)
+    : records
 
   async function fetchRecords() {
     setLoading(true)
@@ -247,7 +258,10 @@ export default function BancoDeVagas({ onEdit, onPrint, onNew }) {
             <p className="text-sm font-light text-cream/35 mt-2">
               {records.length === 0
                 ? 'Nenhuma requisição registrada'
-                : `${records.length} requisiç${records.length === 1 ? 'ão' : 'ões'} encontrada${records.length === 1 ? '' : 's'}`}
+                : filterEmpresa
+                  ? `${filtered.length} de ${records.length} requisiç${records.length === 1 ? 'ão' : 'ões'}`
+                  : `${records.length} requisiç${records.length === 1 ? 'ão' : 'ões'} encontrada${records.length === 1 ? '' : 's'}`
+              }
             </p>
           )}
         </div>
@@ -263,6 +277,35 @@ export default function BancoDeVagas({ onEdit, onPrint, onNew }) {
           Nova
         </button>
       </div>
+
+      {/* Empresa filter pills */}
+      {!loading && records.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-8">
+          <button
+            onClick={() => setFilterEmpresa('')}
+            className={`px-3.5 py-1.5 text-[10px] tracking-widest uppercase transition-colors ${
+              filterEmpresa === ''
+                ? 'bg-gold text-forest font-medium'
+                : 'border border-gold/40 text-cream/60 hover:border-gold/70 hover:text-cream/80'
+            }`}
+          >
+            Todas
+          </button>
+          {EMPRESAS.map((emp) => (
+            <button
+              key={emp}
+              onClick={() => setFilterEmpresa(emp)}
+              className={`px-3.5 py-1.5 text-[10px] tracking-widest uppercase transition-colors ${
+                filterEmpresa === emp
+                  ? 'bg-gold text-forest font-medium'
+                  : 'border border-gold/40 text-cream/60 hover:border-gold/70 hover:text-cream/80'
+              }`}
+            >
+              {emp}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Error banner */}
       {error && (
@@ -287,15 +330,30 @@ export default function BancoDeVagas({ onEdit, onPrint, onNew }) {
         </div>
       )}
 
-      {/* Empty state */}
+      {/* Empty state — no records at all */}
       {!loading && !error && records.length === 0 && (
         <EmptyState onNew={onNew} />
       )}
 
+      {/* Empty state — filter returned nothing */}
+      {!loading && !error && records.length > 0 && filtered.length === 0 && (
+        <div className="flex flex-col items-center py-16 text-center">
+          <p className="font-serif text-xl text-cream/30 font-normal">
+            Nenhuma requisição para <span className="text-cream/50">{filterEmpresa}</span>
+          </p>
+          <button
+            onClick={() => setFilterEmpresa('')}
+            className="text-xs text-gold/60 hover:text-gold mt-3 transition-colors tracking-widest uppercase"
+          >
+            Ver todas →
+          </button>
+        </div>
+      )}
+
       {/* Cards */}
-      {!loading && records.length > 0 && (
+      {!loading && filtered.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {records.map((record) => (
+          {filtered.map((record) => (
             <RequisitionCard
               key={record.id}
               record={record}

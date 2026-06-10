@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { assertSupabase } from '../lib/supabase'
 import { sendRequisitionEmail } from '../lib/email'
-import { AREAS, FORM_INITIAL } from '../lib/constants'
+import { AREAS, EMPRESAS, FORM_INITIAL } from '../lib/constants'
 
 /* ── Reusable primitives ─────────────────────────────── */
 
@@ -44,7 +44,7 @@ function DateInput({ label, name, value, onChange }) {
   )
 }
 
-function SelectInput({ label, name, value, onChange, options }) {
+function SelectInput({ label, name, value, onChange, options, placeholder = 'Selecione' }) {
   return (
     <div>
       <Label>{label}</Label>
@@ -56,7 +56,7 @@ function SelectInput({ label, name, value, onChange, options }) {
           className="field-base appearance-none pr-6 cursor-pointer bg-transparent"
         >
           <option value="" disabled className="bg-forest text-cream/50">
-            Selecione uma área
+            {placeholder}
           </option>
           {options.map((opt) => (
             <option key={opt} value={opt} className="bg-forest text-cream">
@@ -365,11 +365,20 @@ export default function JobRequisitionForm({ editRecord, onBack, onSaved }) {
               <SectionHeader number="01" title="Dados da Vaga" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
                 <SelectInput
+                  label="Empresa"
+                  name="empresa"
+                  value={form.empresa}
+                  onChange={handleChange}
+                  options={EMPRESAS}
+                  placeholder="Selecione uma empresa"
+                />
+                <SelectInput
                   label="Área / Setor"
                   name="area"
                   value={form.area}
                   onChange={handleChange}
                   options={AREAS}
+                  placeholder="Selecione uma área"
                 />
                 <TextInput
                   label="Cargo"

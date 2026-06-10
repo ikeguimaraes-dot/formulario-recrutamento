@@ -1,3 +1,5 @@
+export const EMPRESAS = ['HOS', 'Meet & Eat', 'Mdna', 'Match Point', 'Frêneze']
+
 export const AREAS = [
   'Cozinha',
   'Salão / F&B',
@@ -38,6 +40,7 @@ export const STATUS_CONFIG = {
 }
 
 export const FORM_INITIAL = {
+  empresa:                   '',
   nome_solicitante:          '',
   area:                      '',
   cargo:                     '',

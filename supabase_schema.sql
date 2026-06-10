@@ -64,3 +64,7 @@ create policy "Allow authenticated reads"
 alter table public.job_requisitions
   add column if not exists nome_solicitante text,
   add column if not exists vale_transporte  text;
+
+-- Migration v3 — add empresa field
+alter table public.job_requisitions
+  add column if not exists empresa text;
