@@ -37,22 +37,12 @@ create table if not exists public.job_requisitions (
 create index if not exists idx_job_requisitions_status
   on public.job_requisitions (status);
 
--- Row-level security: allow anonymous insert (for internal managers without auth)
--- If you add Supabase Auth later, replace the policy below.
+-- Access is internal: Supabase Auth + scoped company permissions.
+-- The KPH security migrations own the policies and the authenticated-only
+-- get_job_requisition_access() helper. Never reintroduce anonymous CRUD here.
 alter table public.job_requisitions enable row level security;
-
-create policy "Allow anonymous inserts"
-  on public.job_requisitions
-  for insert
-  to anon
-  with check (true);
-
--- HR admins can read all rows (adjust to match your auth setup)
-create policy "Allow authenticated reads"
-  on public.job_requisitions
-  for select
-  to authenticated
-  using (true);
+revoke all on public.job_requisitions from anon;
+-- No blanket authenticated policy: deploy the scoped KPH migration separately.
 
 -- ============================================================
 -- MIGRATION — run this if the table already exists

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { assertSupabase } from '../lib/supabase'
 import { sendRequisitionEmail } from '../lib/email'
-import { AREAS, EMPRESAS, FORM_INITIAL } from '../lib/constants'
+import { AREAS, FORM_INITIAL } from '../lib/constants'
 
 /* ── Reusable primitives ─────────────────────────────── */
 
@@ -221,7 +221,7 @@ function WarnIcon() {
 
 /* ── Main form ───────────────────────────────────────── */
 
-export default function JobRequisitionForm({ editRecord, onBack, onSaved }) {
+export default function JobRequisitionForm({ editRecord, onBack, onSaved, companies }) {
   const [form, setForm]           = useState(FORM_INITIAL)
   const [loading, setLoading]     = useState(false)
   const [toastState, setToastState] = useState(null)
@@ -252,6 +252,10 @@ export default function JobRequisitionForm({ editRecord, onBack, onSaved }) {
   async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
+    if (!companies.includes(form.empresa)) {
+      setError('Selecione uma empresa autorizada para sua conta.')
+      return
+    }
     setLoading(true)
 
     let sbError
@@ -369,7 +373,7 @@ export default function JobRequisitionForm({ editRecord, onBack, onSaved }) {
                   name="empresa"
                   value={form.empresa}
                   onChange={handleChange}
-                  options={EMPRESAS}
+                  options={companies}
                   placeholder="Selecione uma empresa"
                 />
                 <SelectInput
