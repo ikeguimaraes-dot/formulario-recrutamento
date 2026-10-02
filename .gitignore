@@ -2,3 +2,7 @@ node_modules
 dist
 .env
 .env.local
+.env.production
+.vercel
+test-results
+playwright-report

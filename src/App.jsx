@@ -3,8 +3,13 @@ import Sidebar from './components/Sidebar'
 import JobRequisitionForm from './components/JobRequisitionForm'
 import BancoDeVagas from './components/BancoDeVagas'
 import PrintView from './components/PrintView'
+import AuthGate from './components/AuthGate'
 
 export default function App() {
+  return <AuthGate>{({ user, companies, signOut }) => <AuthorizedApp key={user.id} companies={companies} signOut={signOut} />}</AuthGate>
+}
+
+function AuthorizedApp({ companies, signOut }) {
   const [view, setView]           = useState('nova')
   const [editRecord, setEditRecord] = useState(null)
   const [printRecord, setPrintRecord] = useState(null)
@@ -62,6 +67,7 @@ export default function App() {
           onNavigate={navigateTo}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          onSignOut={signOut}
         />
 
         {/* Main — scrolls independently */}
@@ -91,6 +97,7 @@ export default function App() {
               editRecord={editRecord}
               onBack={editRecord ? handleBack : null}
               onSaved={handleSaved}
+              companies={companies}
             />
           )}
           {view === 'banco' && (
@@ -98,6 +105,7 @@ export default function App() {
               onEdit={handleEdit}
               onPrint={(record) => setPrintRecord(record)}
               onNew={() => navigateTo('nova')}
+              companies={companies}
             />
           )}
         </main>

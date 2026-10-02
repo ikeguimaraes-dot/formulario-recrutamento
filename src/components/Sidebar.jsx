@@ -25,7 +25,7 @@ const NAV_ITEMS = [
   },
 ]
 
-export default function Sidebar({ activeView, onNavigate, isOpen, onClose }) {
+export default function Sidebar({ activeView, onNavigate, isOpen, onClose, onSignOut }) {
   useEffect(() => {
     if (!isOpen) return
     function onKey(e) {
@@ -98,6 +98,7 @@ export default function Sidebar({ activeView, onNavigate, isOpen, onClose }) {
 
       {/* Footer */}
       <div className="px-6 py-5 border-t border-gold/10 flex-shrink-0">
+        <button onClick={onSignOut} className="text-sm text-gold mb-4 px-2 py-3">Sair</button>
         <p className="text-[9px] text-cream/15 font-light tracking-[0.25em] uppercase leading-relaxed">
           Uso Interno
           <br />

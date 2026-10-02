@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { assertSupabase } from '../lib/supabase'
-import { MOTIVO_LABELS, STATUS_CONFIG, EMPRESAS } from '../lib/constants'
+import { MOTIVO_LABELS, STATUS_CONFIG } from '../lib/constants'
 
 /* ── Helpers ─────────────────────────────────────────── */
 
@@ -200,7 +200,7 @@ function RequisitionCard({ record, onEdit, onPrint, onDelete, confirmingDelete, 
 
 /* ── Main component ──────────────────────────────────── */
 
-export default function BancoDeVagas({ onEdit, onPrint, onNew }) {
+export default function BancoDeVagas({ onEdit, onPrint, onNew, companies }) {
   const [records, setRecords]               = useState([])
   const [loading, setLoading]               = useState(true)
   const [error, setError]                   = useState(null)
@@ -291,7 +291,7 @@ export default function BancoDeVagas({ onEdit, onPrint, onNew }) {
           >
             Todas
           </button>
-          {EMPRESAS.map((emp) => (
+          {companies.map((emp) => (
             <button
               key={emp}
               onClick={() => setFilterEmpresa(emp)}
